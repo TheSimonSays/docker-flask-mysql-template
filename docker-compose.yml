@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  app:
+    build: .
+    environment: 
+      SECRET_KEY: ${SECRET_KEY}
+      LOG_TO_STDOUT: ${LOG_TO_STDOUT}
+      MAIL_SERVER: ${MAIL_SERVER}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+    volumes: 
+      - ${LOCAL_APP_PATH}:${CONTAINER_APP_PATH}
+    ports:
+      - 5005:5005
+    links: 
+      - db
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes: 
+      - ${LOCAL_DB_PATH}:${CONTAINER_DB_PATH}
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    links: 
+      - db
